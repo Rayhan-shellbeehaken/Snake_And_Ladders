@@ -4,7 +4,7 @@ import { HiMiniLockOpen } from "react-icons/hi2";
 import { HiMiniLockClosed } from "react-icons/hi2";
 import { useSelector, useDispatch } from 'react-redux';
 import {show, hide} from '../features/lock/lockSlice';
-import { showButton, hideButton } from '../features/button/buttonSlice';
+import { showButton, hideButton, disableButton } from '../features/button/buttonSlice';
 
 const Info = () => {
 
@@ -19,9 +19,7 @@ const Info = () => {
 
   const buttons = useSelector(state => state.button);
 
-  const skipShow = false;
-  const rollButtonName = "Roll";
-
+  const disabled = useSelector(state => state.button.disabled);
 
   const getRandomNumbers = () => {
     const randomNumbers = new Set();
@@ -35,12 +33,20 @@ const Info = () => {
   const rolling = () => {
     dispatch(hide())
     dispatch(hideButton())
+    dispatch(disableButton())
+    setDice1({...dice1, isLocked : false});
+    setDice2({...dice2, isLocked : false});
     const indexes1 = getRandomNumbers();
     const indexes2 = getRandomNumbers();
     if(!dice1.isLocked)
       setDice1({...dice1, rollIndexes : indexes1});
     if(!dice2.isLocked)
       setDice2({...dice2, rollIndexes : indexes2});
+  }
+
+  const handleSkip = () =>{
+    dispatch(hide());
+    dispatch(hideButton());
   }
 
   useEffect(() => {
@@ -73,7 +79,7 @@ const Info = () => {
           <div>
             <Dice dice = {dice1}/>
             {locks.visible &&
-              <a href='#'>
+              <a href='#' onClick={() => setDice1({...dice1, isLocked : !dice1.isLocked})}>
                 {dice1.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
             }
@@ -81,7 +87,7 @@ const Info = () => {
           <div>
             <Dice dice = {dice2}/>
             {locks.visible &&
-              <a href='#'>
+              <a href='#' onClick={() => setDice2({...dice2, isLocked : !dice2.isLocked})}>
                 {dice2.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
             }
@@ -89,9 +95,9 @@ const Info = () => {
         </div>
 
         <div className='roll-button-container'>
-          <a href='#' className='roll' onClick={rolling}>{buttons.roll.name}</a>
+          <a href='#' className={`roll ${disabled ? 'disabled' : ''}`} onClick={rolling}>{buttons.roll.name}</a>
           {buttons.skip.visible && 
-            <a href='#' className='skip'>Skip</a>
+            <a href='#' className='skip' onClick={handleSkip}>Skip</a>
           }
           
         </div>

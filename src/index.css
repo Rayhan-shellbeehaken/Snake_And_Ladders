@@ -114,3 +114,9 @@ a{
 .skip:hover{
   background-color: #f1948a;
 }
+
+.disabled {
+  pointer-events: none;
+  color: gray; /* Change color to indicate it's disabled */
+  cursor: not-allowed;
+}
