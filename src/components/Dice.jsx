@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {show, hide} from '../features/lock/lockSlice';
+import {showButton, hideButton} from '../features/button/buttonSlice';
 
 const Dice = ({dice}) => {
     const dices = ['/assets/dice_1.png', '/assets/dice_2.png', '/assets/dice_3.png', '/assets/dice_4.png', '/assets/dice_5.png', '/assets/dice_6.png'];
@@ -15,7 +16,10 @@ const Dice = ({dice}) => {
                 setIndex(dice.rollIndexes[pos]);
                 pos += 1;
             }else{
-                if(dice.rollIndexes.length == 4) dispatch(show());
+                if(dice.rollIndexes.length == 4){
+                    dispatch(show());
+                    dispatch(showButton());
+                }
                 clearInterval(interval);
             }
         }, 300);

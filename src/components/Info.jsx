@@ -4,19 +4,24 @@ import { HiMiniLockOpen } from "react-icons/hi2";
 import { HiMiniLockClosed } from "react-icons/hi2";
 import { useSelector, useDispatch } from 'react-redux';
 import {show, hide} from '../features/lock/lockSlice';
+import { showButton, hideButton } from '../features/button/buttonSlice';
 
 const Info = () => {
 
   const [targetAttempt, setTargetAttempt] = useState(0);
   const [attemptsLeft, setAttemptsLeft] = useState(0);
-  const [currentPosition, setCurrentPosition] = useState(0);
 
-  const [lockVisible, setLockVisible] = useState(false);
   const [dice1, setDice1] = useState({index : 0, isLocked : false, rollIndexes : [0]});
   const [dice2, setDice2] = useState({index : 1, isLocked : false, rollIndexes : [0]});
 
-  const locks = useSelector(state => state.locks);
+  const locks = useSelector(state => state.lock.locks);
   const dispatch = useDispatch();
+
+  const buttons = useSelector(state => state.button);
+
+  const skipShow = false;
+  const rollButtonName = "Roll";
+
 
   const getRandomNumbers = () => {
     const randomNumbers = new Set();
@@ -29,14 +34,18 @@ const Info = () => {
 
   const rolling = () => {
     dispatch(hide())
+    dispatch(hideButton())
     const indexes1 = getRandomNumbers();
     const indexes2 = getRandomNumbers();
-    setDice1({...dice1, rollIndexes : indexes1});
-    setDice2({...dice2, rollIndexes : indexes2});
+    if(!dice1.isLocked)
+      setDice1({...dice1, rollIndexes : indexes1});
+    if(!dice2.isLocked)
+      setDice2({...dice2, rollIndexes : indexes2});
   }
 
   useEffect(() => {
     console.log(locks.visible)
+    console.log(buttons)
     console.log("Dice 1 : " + dice1.rollIndexes);
     console.log("Dice 2 : " + dice2.rollIndexes);
   },[dice1, dice2])
@@ -80,7 +89,11 @@ const Info = () => {
         </div>
 
         <div className='roll-button-container'>
-          <a href='#' onClick={rolling}>Roll</a>
+          <a href='#' className='roll' onClick={rolling}>{buttons.roll.name}</a>
+          {buttons.skip.visible && 
+            <a href='#' className='skip'>Skip</a>
+          }
+          
         </div>
         
       </div>
