@@ -49,6 +49,16 @@ const Info = () => {
     dispatch(hideButton());
   }
 
+  const handleLock = (lock1) =>{
+    if(lock1){
+      if(dice2.isLocked) setDice2({...dice2, isLocked : false})
+      setDice1({...dice1, isLocked : !dice1.isLocked})
+    }else{
+      if(dice1.isLocked) setDice1({...dice1, isLocked : false});
+      setDice2({...dice2, isLocked : !dice2.isLocked})
+    }
+  }
+
   useEffect(() => {
     console.log(locks.visible)
     console.log(buttons)
@@ -79,7 +89,7 @@ const Info = () => {
           <div>
             <Dice dice = {dice1}/>
             {locks.visible &&
-              <a href='#' onClick={() => setDice1({...dice1, isLocked : !dice1.isLocked})}>
+              <a href='#' onClick={() => handleLock(true)}>
                 {dice1.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
             }
@@ -87,7 +97,7 @@ const Info = () => {
           <div>
             <Dice dice = {dice2}/>
             {locks.visible &&
-              <a href='#' onClick={() => setDice2({...dice2, isLocked : !dice2.isLocked})}>
+              <a href='#' onClick={() => handleLock(false)}>
                 {dice2.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
             }
