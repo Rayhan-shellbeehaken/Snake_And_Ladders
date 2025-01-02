@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Dice from './Dice';
 import { HiMiniLockOpen } from "react-icons/hi2";
 import { HiMiniLockClosed } from "react-icons/hi2";
+import { useSelector, useDispatch } from 'react-redux';
+import {show, hide} from '../features/lock/lockSlice';
 
 const Info = () => {
 
@@ -13,6 +15,8 @@ const Info = () => {
   const [dice1, setDice1] = useState({index : 0, isLocked : false, rollIndexes : [0]});
   const [dice2, setDice2] = useState({index : 1, isLocked : false, rollIndexes : [0]});
 
+  const locks = useSelector(state => state.locks);
+  const dispatch = useDispatch();
 
   const getRandomNumbers = () => {
     const randomNumbers = new Set();
@@ -24,6 +28,7 @@ const Info = () => {
   }
 
   const rolling = () => {
+    dispatch(hide())
     const indexes1 = getRandomNumbers();
     const indexes2 = getRandomNumbers();
     setDice1({...dice1, rollIndexes : indexes1});
@@ -31,6 +36,7 @@ const Info = () => {
   }
 
   useEffect(() => {
+    console.log(locks.visible)
     console.log("Dice 1 : " + dice1.rollIndexes);
     console.log("Dice 2 : " + dice2.rollIndexes);
   },[dice1, dice2])
@@ -57,15 +63,15 @@ const Info = () => {
         <div>
           <div>
             <Dice dice = {dice1}/>
-            {lockVisible &&
+            {locks.visible &&
               <a href='#'>
                 {dice1.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
             }
           </div>
           <div>
-            <Dice dice = {dice2} />
-            {lockVisible &&
+            <Dice dice = {dice2}/>
+            {locks.visible &&
               <a href='#'>
                 {dice2.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
