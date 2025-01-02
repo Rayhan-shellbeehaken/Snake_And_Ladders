@@ -10,6 +10,7 @@ const Info = () => {
 
   const [targetAttempt, setTargetAttempt] = useState(0);
   const [attemptsLeft, setAttemptsLeft] = useState(0);
+  const [currentPosition, setCurrentPosition] = useState(0);
 
   const [dice1, setDice1] = useState({index : 0, isLocked : false, rollIndexes : [0]});
   const [dice2, setDice2] = useState({index : 1, isLocked : false, rollIndexes : [0]});
@@ -31,6 +32,7 @@ const Info = () => {
   }
 
   const rolling = () => {
+    if(!dice1.isLocked || !dice2.isLocked) setAttemptsLeft(attemptsLeft-1);
     dispatch(hide())
     dispatch(hideButton())
     dispatch(disableButton())
@@ -42,6 +44,7 @@ const Info = () => {
       setDice1({...dice1, rollIndexes : indexes1});
     if(!dice2.isLocked)
       setDice2({...dice2, rollIndexes : indexes2});
+
   }
 
   const handleSkip = () =>{
@@ -59,12 +62,16 @@ const Info = () => {
     }
   }
 
+  const generateRandom = () => {
+    const val = Math.floor(Math.random() * (50 - 30 + 1)) + 30;
+    return val;
+  }
+
   useEffect(() => {
-    console.log(locks.visible)
-    console.log(buttons)
-    console.log("Dice 1 : " + dice1.rollIndexes);
-    console.log("Dice 2 : " + dice2.rollIndexes);
-  },[dice1, dice2])
+    const target = generateRandom();
+    setTargetAttempt(target);
+    setAttemptsLeft(target);
+  },[]);
 
 
   return (
@@ -81,7 +88,7 @@ const Info = () => {
 
       <div>
         <h2>Current Position</h2>
-        <h2>{attemptsLeft}</h2>
+        <h2>{currentPosition}</h2>
       </div>
 
       <div className='dice-container'>
