@@ -8,7 +8,7 @@ const Board = () => {
         const tempBox = [];
         for(let j=1; j<=10; j++){
             tempBox.push(
-                <div>{boxNo}</div>
+                <div key={boxNo}>{boxNo}</div>
             )
             boxNo--;
         }
