@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Snakes from './Snakes';
 import Ladders from './Ladders';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,8 @@ const Board = () => {
 
     const boxes = [];
     let boxNo = 100;
+
+    
 
     // const [position, setPosition] = useState(2);
     for(let i=1; i<=10; i++){

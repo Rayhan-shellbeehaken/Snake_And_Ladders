@@ -56,13 +56,13 @@ const Info = () => {
     if(!dice1.isLocked) setDice1({...dice1, rollIndexes : indexes1});
     if(!dice2.isLocked) setDice2({...dice2, rollIndexes : indexes2});
 
-    if(!uthse && ((indexes1[3] + 1 === 1) || (indexes2[3] + 1) === 1)) {
-      setUthse(true);
-      pawnPostion(indexes1[3], indexes2[3]);
-    }
-    if(uthse){
-      pawnPostion(indexes1[3], indexes2[3]);
-    }
+    // if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1)) {
+    //   setUthse(true);
+    //   //pawnPostion(dice1.rollIndexes[3]-1, dice2.rollIndexes[3]);
+    // }
+    // if(uthse && roll.status === true){
+    //   //pawnPostion(indexes1[3], indexes2[3]);
+    // }
   }
 
   const rolling = () => {
@@ -71,13 +71,13 @@ const Info = () => {
     roll.name === "Roll" ? dispatch(show()) : dispatch(hide())
     dispatchAll();
     diceState();
-
   }
 
   const handleSkip = () =>{
     setRoll({...roll, name : "Roll", status : false});
     setDice1({...dice1, isLocked : false});
     setDice2({...dice2, isLocked : false});
+    //pawnPostion(dice1.rollIndexes[3], dice2.rollIndexes[3])
     setSkipped(true);
     dispatch(hide());
     dispatch(hideButton());
@@ -103,6 +103,21 @@ const Info = () => {
     setTargetAttempt(target);
     setAttemptsLeft(target);
   },[]);
+
+  useEffect(() => {
+    if(dice1.rollIndexes.length !== 0 && dice2.rollIndexes.length !==0){
+      if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1) && roll.status == false){
+        setUthse(true);
+        console.log("Ekhane")
+        const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 1;
+        dispatch(changePostion(newPos));
+      }
+      if(uthse && roll.status == false){
+        const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 2;
+        dispatch(changePostion(newPos));
+      }
+    }
+  }, [dice1.rollIndexes, dice2.rollIndexes, roll.status])
 
 
   return (
