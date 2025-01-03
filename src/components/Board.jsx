@@ -12,9 +12,8 @@ const Board = () => {
     const boxes = [];
     let boxNo = 100;
 
-    
-
     // const [position, setPosition] = useState(2);
+    
     for(let i=1; i<=10; i++){
         const tempBox = [];
         for(let j=1; j<=10; j++){

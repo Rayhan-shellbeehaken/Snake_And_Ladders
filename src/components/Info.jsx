@@ -11,9 +11,8 @@ const Info = () => {
 
   const [targetAttempt, setTargetAttempt] = useState(0);
   const [attemptsLeft, setAttemptsLeft] = useState(0);
-  const [currentPosition, setCurrentPosition] = useState(0);
-
-  const [skipped, setSkipped] = useState(false);
+  
+  const currentPosition = useSelector(state => state.pawn.position);
 
   const [roll, setRoll] = useState({name : "Roll", status : false});
 
@@ -43,10 +42,6 @@ const Info = () => {
     dispatch(disableButton())
   }
 
-  const pawnPostion = (pos1, pos2) => {
-    const newPos = pos1 + pos2 + 2;
-    dispatch(changePostion(newPos));
-  }
 
   const diceState = () => {
     setDice1({...dice1, isLocked : false});
@@ -55,14 +50,6 @@ const Info = () => {
     const indexes2 = getRandomNumbers();
     if(!dice1.isLocked) setDice1({...dice1, rollIndexes : indexes1});
     if(!dice2.isLocked) setDice2({...dice2, rollIndexes : indexes2});
-
-    // if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1)) {
-    //   setUthse(true);
-    //   //pawnPostion(dice1.rollIndexes[3]-1, dice2.rollIndexes[3]);
-    // }
-    // if(uthse && roll.status === true){
-    //   //pawnPostion(indexes1[3], indexes2[3]);
-    // }
   }
 
   const rolling = () => {
@@ -77,8 +64,6 @@ const Info = () => {
     setRoll({...roll, name : "Roll", status : false});
     setDice1({...dice1, isLocked : false});
     setDice2({...dice2, isLocked : false});
-    //pawnPostion(dice1.rollIndexes[3], dice2.rollIndexes[3])
-    setSkipped(true);
     dispatch(hide());
     dispatch(hideButton());
   }
@@ -106,18 +91,35 @@ const Info = () => {
 
   useEffect(() => {
     if(dice1.rollIndexes.length !== 0 && dice2.rollIndexes.length !==0){
+      
       if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1) && roll.status == false){
         setUthse(true);
-        console.log("Ekhane")
         const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 1;
-        dispatch(changePostion(newPos));
+        
+        let endPos = currentPosition + newPos;
+        movementAnimation(endPos);
       }
       if(uthse && roll.status == false){
         const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 2;
-        dispatch(changePostion(newPos));
+        let endPos = currentPosition + newPos;
+        movementAnimation(endPos);
       }
     }
   }, [dice1.rollIndexes, dice2.rollIndexes, roll.status])
+
+
+  const movementAnimation = (endPos) => {
+    let startPos = currentPosition;
+    const interval = setInterval(() => {
+      if(startPos < endPos){
+        dispatch(changePostion(1));
+        startPos += 1;
+      }else{
+        clearInterval(interval)
+      }
+    },500)
+  }
+  
 
 
   return (
