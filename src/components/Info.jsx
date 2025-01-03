@@ -5,12 +5,15 @@ import { HiMiniLockClosed } from "react-icons/hi2";
 import { useSelector, useDispatch } from 'react-redux';
 import {show, hide} from '../features/lock/lockSlice';
 import { showButton, hideButton, disableButton } from '../features/button/buttonSlice';
+import { changePostion } from '../features/pawn/pawnSlice';
 
 const Info = () => {
 
   const [targetAttempt, setTargetAttempt] = useState(0);
   const [attemptsLeft, setAttemptsLeft] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(0);
+
+  const [uthse, setUthse] = useState(false);
 
   const [dice1, setDice1] = useState({index : 0, isLocked : false, rollIndexes : [0]});
   const [dice2, setDice2] = useState({index : 1, isLocked : false, rollIndexes : [0]});
@@ -31,11 +34,18 @@ const Info = () => {
     return Array.from(randomNumbers);
   }
 
-  const rolling = () => {
-    if(!dice1.isLocked || !dice2.isLocked) setAttemptsLeft(attemptsLeft-1);
+  const dispatchAll = () => {
     dispatch(hide())
     dispatch(hideButton())
     dispatch(disableButton())
+  }
+
+  const pawnPostion = (pos1, pos2) => {
+    const newPos = pos1 + pos2 + 2;
+    dispatch(changePostion(newPos));
+  }
+
+  const diceState = () => {
     setDice1({...dice1, isLocked : false});
     setDice2({...dice2, isLocked : false});
     const indexes1 = getRandomNumbers();
@@ -45,6 +55,25 @@ const Info = () => {
     if(!dice2.isLocked)
       setDice2({...dice2, rollIndexes : indexes2});
 
+    if(!uthse && ((indexes1[3] + 1 === 1) || (indexes2[3] + 1) === 1)) {
+      console.log(indexes1);
+      console.log(indexes2)
+      console.log("ekhane");
+      setUthse(true);
+      pawnPostion(indexes1[3], indexes2[3]);
+    }
+    if(uthse){
+      pawnPostion(indexes1[3], indexes2[3]);
+    }
+
+    console.log(uthse);
+    
+  }
+
+  const rolling = () => {
+    if(!dice1.isLocked || !dice2.isLocked) setAttemptsLeft(attemptsLeft-1);
+    dispatchAll();
+    diceState();
   }
 
   const handleSkip = () =>{

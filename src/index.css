@@ -52,6 +52,10 @@ a{
 .snake-3{
   position: absolute;
   transform: rotate(34deg);
+  height: 60vh;
+  width: 44vw;
+  top: 16vh;
+  left: 1vw;
 }
 
 .snake-4{
@@ -82,11 +86,18 @@ a{
 .ladder-3{
   position: absolute;
   width: 8vw;
-  height: 40vh;
+  height: 39vh;
   transform: scaleX(-1) rotate(29deg);
-  top: 57vh;
-  left: 6vw;
+  bottom: 0vh;
+  left: 5.5vw;
+  
 }
+
+.pawn{ 
+  width: 100%;
+  z-index: 3;
+}
+
 
 .board > div > img{
   width: 100%;
