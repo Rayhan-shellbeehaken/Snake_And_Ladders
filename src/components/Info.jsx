@@ -13,6 +13,10 @@ const Info = () => {
   const [attemptsLeft, setAttemptsLeft] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(0);
 
+  const [skipped, setSkipped] = useState(false);
+
+  const [roll, setRoll] = useState({name : "Roll", status : false});
+
   const [uthse, setUthse] = useState(false);
 
   const [dice1, setDice1] = useState({index : 0, isLocked : false, rollIndexes : [0]});
@@ -35,8 +39,8 @@ const Info = () => {
   }
 
   const dispatchAll = () => {
-    dispatch(hide())
-    dispatch(hideButton())
+    // dispatch(hide())
+    // dispatch(hideButton())
     dispatch(disableButton())
   }
 
@@ -50,33 +54,29 @@ const Info = () => {
     setDice2({...dice2, isLocked : false});
     const indexes1 = getRandomNumbers();
     const indexes2 = getRandomNumbers();
-    if(!dice1.isLocked)
-      setDice1({...dice1, rollIndexes : indexes1});
-    if(!dice2.isLocked)
-      setDice2({...dice2, rollIndexes : indexes2});
+    if(!dice1.isLocked) setDice1({...dice1, rollIndexes : indexes1});
+    if(!dice2.isLocked) setDice2({...dice2, rollIndexes : indexes2});
 
     if(!uthse && ((indexes1[3] + 1 === 1) || (indexes2[3] + 1) === 1)) {
-      console.log(indexes1);
-      console.log(indexes2)
-      console.log("ekhane");
       setUthse(true);
       pawnPostion(indexes1[3], indexes2[3]);
     }
     if(uthse){
       pawnPostion(indexes1[3], indexes2[3]);
     }
-
-    console.log(uthse);
-    
   }
 
   const rolling = () => {
     if(!dice1.isLocked || !dice2.isLocked) setAttemptsLeft(attemptsLeft-1);
+    roll.name === "Roll" ? setRoll({...roll, name : "Re-roll", status : !roll.status}) : setRoll({...roll, name : "Roll", status : !roll.status});
     dispatchAll();
     diceState();
+
   }
 
   const handleSkip = () =>{
+    setRoll({...roll, name : "Roll", status : false});
+    setSkipped(true);
     dispatch(hide());
     dispatch(hideButton());
   }
@@ -123,7 +123,7 @@ const Info = () => {
       <div className='dice-container'>
         <div>
           <div>
-            <Dice dice = {dice1}/>
+            <Dice dice = {dice1} skipped = {skipped} setSkipped = {setSkipped}/>
             {locks.visible &&
               <a href='#' onClick={() => handleLock(true)}>
                 {dice1.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
@@ -131,7 +131,7 @@ const Info = () => {
             }
           </div>
           <div>
-            <Dice dice = {dice2}/>
+            <Dice dice = {dice2} skipped = {skipped} setSkipped = {setSkipped}/>
             {locks.visible &&
               <a href='#' onClick={() => handleLock(false)}>
                 {dice2.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
@@ -141,11 +141,10 @@ const Info = () => {
         </div>
 
         <div className='roll-button-container'>
-          <a href='#' className={`roll ${disabled ? 'disabled' : ''}`} onClick={rolling}>{buttons.roll.name}</a>
-          {buttons.skip.visible && 
-            <a href='#' className='skip' onClick={handleSkip}>Skip</a>
+          <a href='#' className={`roll ${disabled ? 'disabled' : ''}`} onClick={rolling}>{roll.name}</a>
+          {roll.status && 
+            <a href='#' className={`skip ${disabled ? 'disabled' : ''}`} onClick={handleSkip}>Skip</a>
           }
-          
         </div>
         
       </div>
