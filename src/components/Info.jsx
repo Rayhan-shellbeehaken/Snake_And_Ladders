@@ -39,8 +39,7 @@ const Info = () => {
   }
 
   const dispatchAll = () => {
-    // dispatch(hide())
-    // dispatch(hideButton())
+    dispatch(hide())
     dispatch(disableButton())
   }
 
@@ -76,6 +75,8 @@ const Info = () => {
 
   const handleSkip = () =>{
     setRoll({...roll, name : "Roll", status : false});
+    setDice1({...dice1, isLocked : false});
+    setDice2({...dice2, isLocked : false});
     setSkipped(true);
     dispatch(hide());
     dispatch(hideButton());
@@ -123,7 +124,7 @@ const Info = () => {
       <div className='dice-container'>
         <div>
           <div>
-            <Dice dice = {dice1} skipped = {skipped} setSkipped = {setSkipped}/>
+            <Dice dice = {dice1}/>
             {locks.visible &&
               <a href='#' onClick={() => handleLock(true)}>
                 {dice1.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
@@ -131,7 +132,7 @@ const Info = () => {
             }
           </div>
           <div>
-            <Dice dice = {dice2} skipped = {skipped} setSkipped = {setSkipped}/>
+            <Dice dice = {dice2}/>
             {locks.visible &&
               <a href='#' onClick={() => handleLock(false)}>
                 {dice2.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
