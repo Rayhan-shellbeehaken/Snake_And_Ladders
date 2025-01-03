@@ -11,22 +11,19 @@ const Info = () => {
 
   const [targetAttempt, setTargetAttempt] = useState(0);
   const [attemptsLeft, setAttemptsLeft] = useState(0);
-  
   const currentPosition = useSelector(state => state.pawn.position);
-
   const [roll, setRoll] = useState({name : "Roll", status : false});
-
   const [uthse, setUthse] = useState(false);
-
   const [dice1, setDice1] = useState({index : 0, isLocked : false, rollIndexes : [0]});
   const [dice2, setDice2] = useState({index : 1, isLocked : false, rollIndexes : [0]});
-
   const locks = useSelector(state => state.lock.locks);
   const dispatch = useDispatch();
-
   const buttons = useSelector(state => state.button);
-
   const disabled = useSelector(state => state.button.disabled);
+  const [currentPawn, setCurrentPawn] = useState(currentPosition);
+
+  const ladders = [{start : 4, end : 40}, {start : 15, end : 69}, {start : 61, end : 82}];
+
 
   const getRandomNumbers = () => {
     const randomNumbers = new Set();
@@ -41,7 +38,6 @@ const Info = () => {
     //dispatch(hide())
     dispatch(disableButton())
   }
-
 
   const diceState = () => {
     setDice1({...dice1, isLocked : false});
@@ -102,7 +98,43 @@ const Info = () => {
       if(uthse && roll.status == false){
         const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 2;
         let endPos = currentPosition + newPos;
-        movementAnimation(endPos);
+        
+        const firstDice = dice1.rollIndexes[3] + currentPosition + 1;
+        const secondDice = dice2.rollIndexes[3] + currentPosition + 1;
+
+        let done = false;
+        for(let i = 0; i<ladders.length ; i++){
+          if(firstDice === ladders[i].start){
+            console.log("firstDice");
+            done = true;
+            movementAnimation(ladders[i].start);
+            setTimeout(()=>{
+              console.log("Hello world!!");
+              dispatch(changePostion(ladders[i].end))
+            },(ladders[i].start - currentPosition + 1)*500);
+            //dispatch(changePostion(ladders[i].end));
+            
+            break;
+            // movementAnimation(ladders[i].end + dice2.rollIndexes[3] + 1);
+          }else if(secondDice === ladders[i].start){
+            console.log("seconddice");
+            done = true;
+            movementAnimation(ladders[i].start);
+            setTimeout(()=>{
+              console.log("Hello world!!");
+              dispatch(changePostion(ladders[i].end));
+            },(ladders[i].start - currentPosition + 1)*500);
+            //dispatch(changePostion(ladders[i].end));
+            //movementAnimation(ladders[i].end - dice1.rollIndexes[3] - 1);
+            break;
+            // movementAnimation(ladders[i].end + dice1.rollIndexes[3] + 1);
+          }else if((firstDice + secondDice) === ladders[i].start){
+            console.log("third");
+            done = true;
+            movementAnimation(ladders[i].end);
+          }
+        }
+        if(!done) movementAnimation(endPos);
       }
     }
   }, [dice1.rollIndexes, dice2.rollIndexes, roll.status])
@@ -111,9 +143,13 @@ const Info = () => {
   const movementAnimation = (endPos) => {
     let startPos = currentPosition;
     const interval = setInterval(() => {
+      console.log("startPos : "+startPos);
+      console.log("endPos : "+endPos);
+      console.log("currentPos : "+currentPosition);
+      console.log("currentPawn : "+currentPawn);
       if(startPos < endPos){
-        dispatch(changePostion(1));
         startPos += 1;
+        dispatch(changePostion(1));
       }else{
         clearInterval(interval)
       }
