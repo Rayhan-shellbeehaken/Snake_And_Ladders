@@ -23,7 +23,6 @@ const Dice = ({dice}) => {
             }else{
                 if(dice.rollIndexes.length == 4){
                     dispatch(enableButton())
-                    dispatch(show())
                 }
                 clearInterval(interval);
             }

@@ -39,7 +39,7 @@ const Info = () => {
   }
 
   const dispatchAll = () => {
-    dispatch(hide())
+    //dispatch(hide())
     dispatch(disableButton())
   }
 
@@ -68,6 +68,7 @@ const Info = () => {
   const rolling = () => {
     if(!dice1.isLocked || !dice2.isLocked) setAttemptsLeft(attemptsLeft-1);
     roll.name === "Roll" ? setRoll({...roll, name : "Re-roll", status : !roll.status}) : setRoll({...roll, name : "Roll", status : !roll.status});
+    roll.name === "Roll" ? dispatch(show()) : dispatch(hide())
     dispatchAll();
     diceState();
 
@@ -126,7 +127,7 @@ const Info = () => {
           <div>
             <Dice dice = {dice1}/>
             {locks.visible &&
-              <a href='#' onClick={() => handleLock(true)}>
+              <a href='#' onClick={() => handleLock(true)} className={`${disabled ? 'disabled' : ''}`}>
                 {dice1.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
             }
@@ -134,7 +135,7 @@ const Info = () => {
           <div>
             <Dice dice = {dice2}/>
             {locks.visible &&
-              <a href='#' onClick={() => handleLock(false)}>
+              <a href='#' onClick={() => handleLock(false)} className={`${disabled ? 'disabled' : ''}`}>
                 {dice2.isLocked ? <HiMiniLockClosed /> : <HiMiniLockOpen />}
               </a>
             }
