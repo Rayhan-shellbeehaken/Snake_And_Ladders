@@ -4,6 +4,8 @@ import Ladders from './Ladders';
 import { useDispatch, useSelector } from 'react-redux';
 import { changePostion } from '../features/pawn/pawnSlice';
 
+import './board-module.css';
+
 const Board = () => {
 
     const dispatch = useDispatch();
