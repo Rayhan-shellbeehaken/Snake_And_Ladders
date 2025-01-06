@@ -9,12 +9,15 @@ export const pawnSlice = createSlice({
         initialState,
         reducers : {
             changePostion : (state, action) => {
-                state.position = state.position + action.payload
+                if(state.position + action.payload <= 100) state.position = state.position + action.payload;
+            },
+            reducePositiion : (state, action) => {
+                if(state.position - action.payload >= 1) state.position = state.position - action.payload;
             }
         }
     }
 )
 
-export const {changePostion} = pawnSlice.actions;
+export const {changePostion, reducePositiion} = pawnSlice.actions;
 
 export default pawnSlice.reducer;

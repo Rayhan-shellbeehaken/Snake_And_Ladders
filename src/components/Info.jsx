@@ -5,7 +5,7 @@ import { HiMiniLockClosed } from "react-icons/hi2";
 import { useSelector, useDispatch } from 'react-redux';
 import {show, hide} from '../features/lock/lockSlice';
 import { showButton, hideButton, disableButton } from '../features/button/buttonSlice';
-import { changePostion } from '../features/pawn/pawnSlice';
+import { changePostion, reducePositiion } from '../features/pawn/pawnSlice';
 
 const Info = () => {
 
@@ -23,6 +23,7 @@ const Info = () => {
   const [currentPawn, setCurrentPawn] = useState(currentPosition);
 
   const ladders = [{start : 4, end : 40}, {start : 15, end : 69}, {start : 61, end : 82}];
+  const snakes = [{start : 38, end : 19}, {start : 67, end : 51}, {start : 79, end : 29}, {start : 97, end : 17}];
 
 
   const getRandomNumbers = () => {
@@ -49,7 +50,7 @@ const Info = () => {
   }
 
   const rolling = () => {
-    if(!dice1.isLocked || !dice2.isLocked) setAttemptsLeft(attemptsLeft-1);
+    if((!dice1.isLocked || !dice2.isLocked) && roll.status === false) setAttemptsLeft(attemptsLeft-1);
     roll.name === "Roll" ? setRoll({...roll, name : "Re-roll", status : !roll.status}) : setRoll({...roll, name : "Roll", status : !roll.status});
     roll.name === "Roll" ? dispatch(show()) : dispatch(hide())
     dispatchAll();
@@ -101,7 +102,7 @@ const Info = () => {
         let endPos = currentPosition + newPos;
 
         let flag = false;
-        for(let i=0; i<ladders.length ; i++){
+        for(let i = 0; i<ladders.length ; i++){
           if(dice1.rollIndexes[3] + currentPosition + 1 === ladders[i].start){
             flag = true;
             laddersClimbing(ladders[i].start, ladders[i].end, dice2.rollIndexes[3]+1);
@@ -117,19 +118,43 @@ const Info = () => {
             break;
           }
         }
+
+        for(let i = 0; i<snakes.length; i++){
+          if(dice1.rollIndexes[3] + currentPosition + 1 === snakes[i].start){
+            flag = true;
+            snakeBiting(snakes[i].start, snakes[i].end, dice2.rollIndexes[3]+1);
+            break;
+          }
+          else if(dice2.rollIndexes[3] + currentPosition + 1 === snakes[i].start){
+            flag = true;
+            snakeBiting(snakes[i].start, snakes[i].end, dice1.rollIndexes[3]+1);
+            break;
+          }else if(endPos === snakes[i].start){
+            flag = true;
+            snakeBiting(snakes[i].start, snakes[i].end, 0);
+            break;
+          }
+        }
         if(!flag) movementAnimation(endPos);
       }
     }
   }, [dice1.rollIndexes, dice2.rollIndexes, roll.status])
 
   const laddersClimbing = (ladderStart, ladderEnd, dicePoint) => {
-    movementAnimation(ladderStart)
+    movementAnimation(ladderStart, true)
     .then(() => {
       dispatch(changePostion(ladderEnd - ladderStart));
     })
     .then(() => {
       movementAnimation(currentPosition + dicePoint);
     })
+    .catch((err) => console.log(err));
+  }
+
+  const snakeBiting = (snakeStart, snakeEnd, dicePoint) => {
+    movementAnimation(snakeStart)
+    .then(() => dispatch(reducePositiion(snakeStart - snakeEnd)))
+    .then(() => movementAnimation(currentPosition + dicePoint))
     .catch((err) => console.log(err));
   }
 
@@ -143,7 +168,8 @@ const Info = () => {
         if(startPos < endPos){
           startPos += 1;
           dispatch(changePostion(1));
-        }else{
+        }
+        else{
           clearInterval(interval);
           resolve();
         }
