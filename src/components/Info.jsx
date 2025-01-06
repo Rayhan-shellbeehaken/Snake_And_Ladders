@@ -87,8 +87,7 @@ const Info = () => {
   },[]);
 
   useEffect(() => {
-    if(dice1.rollIndexes.length !== 0 && dice2.rollIndexes.length !==0){
-      
+    if(dice1.rollIndexes.length !== 0 && dice2.rollIndexes.length !==0){  
       if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1) && roll.status == false){ 
         setUthse(true);
         if(dice1.rollIndexes[3] + 1 === 1 && dice2.rollIndexes[3] + 1 === ladders[0].start){
@@ -178,6 +177,7 @@ const Info = () => {
   }
 
   useEffect(()=>{
+    if(currentPosition === 100) dispatch(disableButton());
     console.log("Current Position : "+currentPosition);
   },[currentPosition]);
   
