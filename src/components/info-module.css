@@ -1,0 +1,20 @@
+.info{
+    width: 30vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.info > div:not(:last-child){
+    background-color: rgb(231, 231, 231);
+    margin: 3vh 0;
+    padding: 3vh 4vw;
+    border-radius: 7px;
+    text-align: center;
+}
+
+.info > div:not(:last-child) h2{
+    font-size: 28px;
+    margin-bottom: 8px;
+}

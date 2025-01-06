@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {show, hide} from '../features/lock/lockSlice';
 import { showButton, hideButton, disableButton } from '../features/button/buttonSlice';
 import { changePostion, reducePositiion } from '../features/pawn/pawnSlice';
+import './info-module.css';
 
 const Info = () => {
 
