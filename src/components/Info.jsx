@@ -143,6 +143,7 @@ const Info = () => {
 
 
   const movementAnimation = (endPos) => {
+    if(endPos >= 100) endPos = currentPosition;
     return new Promise((resolve) => {
       let startPos = currentPosition;
       const interval = setInterval(() => {
