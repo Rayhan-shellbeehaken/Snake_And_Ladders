@@ -88,73 +88,72 @@ const Info = () => {
   useEffect(() => {
     if(dice1.rollIndexes.length !== 0 && dice2.rollIndexes.length !==0){
       
-      if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1) && roll.status == false){
+      if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1) && roll.status == false){ 
         setUthse(true);
-        const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 1;
-        
-        let endPos = currentPosition + newPos;
-        movementAnimation(endPos);
+        if(dice1.rollIndexes[3] + 1 === 1 && dice2.rollIndexes[3] + 1 === ladders[0].start){
+          laddersClimbing(ladders[0].start, ladders[0].end, 0);
+        }else if(dice2.rollIndexes[3] + 1 === 1 && dice1.rollIndexes[3] + 1 === ladders[0].start){
+          laddersClimbing(ladders[0].start, ladders[0].end, 0);
+        }else movementAnimation(currentPosition + dice1.rollIndexes[3] + dice2.rollIndexes[3] + 1);
       }
       if(uthse && roll.status == false){
         const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 2;
         let endPos = currentPosition + newPos;
-        
-        const firstDice = dice1.rollIndexes[3] + currentPosition + 1;
-        const secondDice = dice2.rollIndexes[3] + currentPosition + 1;
 
-        let done = false;
-        for(let i = 0; i<ladders.length ; i++){
-          if(firstDice === ladders[i].start){
-            console.log("firstDice");
-            done = true;
-            movementAnimation(ladders[i].start);
-            setTimeout(()=>{
-              console.log("Hello world!!");
-              dispatch(changePostion(ladders[i].end))
-            },(ladders[i].start - currentPosition + 1)*500);
-            //dispatch(changePostion(ladders[i].end));
-            
+        let flag = false;
+        for(let i=0; i<ladders.length ; i++){
+          if(dice1.rollIndexes[3] + currentPosition + 1 === ladders[i].start){
+            flag = true;
+            laddersClimbing(ladders[i].start, ladders[i].end, dice2.rollIndexes[3]+1);
             break;
-            // movementAnimation(ladders[i].end + dice2.rollIndexes[3] + 1);
-          }else if(secondDice === ladders[i].start){
-            console.log("seconddice");
-            done = true;
-            movementAnimation(ladders[i].start);
-            setTimeout(()=>{
-              console.log("Hello world!!");
-              dispatch(changePostion(ladders[i].end));
-            },(ladders[i].start - currentPosition + 1)*500);
-            //dispatch(changePostion(ladders[i].end));
-            //movementAnimation(ladders[i].end - dice1.rollIndexes[3] - 1);
+          }
+          else if(dice2.rollIndexes[3] + currentPosition + 1 === ladders[i].start){
+            flag = true;
+            laddersClimbing(ladders[i].start, ladders[i].end, dice1.rollIndexes[3]+1);
             break;
-            // movementAnimation(ladders[i].end + dice1.rollIndexes[3] + 1);
-          }else if((firstDice + secondDice) === ladders[i].start){
-            console.log("third");
-            done = true;
-            movementAnimation(ladders[i].end);
+          }else if(endPos === ladders[i].start){
+            flag = true;
+            laddersClimbing(ladders[i].start, ladders[i].end, 0);
+            break;
           }
         }
-        if(!done) movementAnimation(endPos);
+        if(!flag) movementAnimation(endPos);
       }
     }
   }, [dice1.rollIndexes, dice2.rollIndexes, roll.status])
 
+  const laddersClimbing = (ladderStart, ladderEnd, dicePoint) => {
+    movementAnimation(ladderStart)
+    .then(() => {
+      dispatch(changePostion(ladderEnd - ladderStart));
+    })
+    .then(() => {
+      movementAnimation(currentPosition + dicePoint);
+    })
+    .catch((err) => console.log(err));
+  }
+
 
   const movementAnimation = (endPos) => {
-    let startPos = currentPosition;
-    const interval = setInterval(() => {
-      console.log("startPos : "+startPos);
-      console.log("endPos : "+endPos);
-      console.log("currentPos : "+currentPosition);
-      console.log("currentPawn : "+currentPawn);
-      if(startPos < endPos){
-        startPos += 1;
-        dispatch(changePostion(1));
-      }else{
-        clearInterval(interval)
-      }
-    },500)
+    console.log("Start position : "+currentPosition);
+    console.log("End position : "+endPos);
+    return new Promise((resolve) => {
+      let startPos = currentPosition;
+      const interval = setInterval(() => {
+        if(startPos < endPos){
+          startPos += 1;
+          dispatch(changePostion(1));
+        }else{
+          clearInterval(interval);
+          resolve();
+        }
+      },500)
+    })
   }
+
+  useEffect(()=>{
+    console.log("Current Position : "+currentPosition);
+  },[currentPosition]);
   
 
 
