@@ -1,4 +1,5 @@
 import React from 'react'
+import './snake-module.css';
 
 const Snakes = () => {
   return (

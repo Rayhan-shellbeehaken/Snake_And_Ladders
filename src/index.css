@@ -16,38 +16,6 @@ a{
 
 }
 
-.snake-1{
-  position: absolute;
-  width: 5vw;
-  height: 80vh;
-  left: 15vw;
-  top: 4vh;
-}
-
-.snake-2{
-  position: absolute;
-  width: 15vw;
-  top: 29vh;
-  left: 29.5vw;
-}
-
-.snake-3{
-  position: absolute;
-  transform: rotate(34deg);
-  height: 60vh;
-  width: 44vw;
-  top: 16vh;
-  left: 1vw;
-}
-
-.snake-4{
-  position: absolute;
-  transform: rotate(185deg);
-  height: 25vh;
-  top: 60vh;
-  left: 7vw;
-}
-
 .ladder-1{
   position: absolute;
   width: 8vw;
