@@ -4,12 +4,14 @@ import { HiMiniLockOpen } from "react-icons/hi2";
 import { HiMiniLockClosed } from "react-icons/hi2";
 import { useSelector, useDispatch } from 'react-redux';
 import {show, hide} from '../features/lock/lockSlice';
-import { showButton, hideButton, disableButton } from '../features/button/buttonSlice';
+import { hideButton, disableButton } from '../features/button/buttonSlice';
 import { changePostion, reducePositiion } from '../features/pawn/pawnSlice';
+import getRandomNumbers from '../utilities/utility';
+import { snakes, ladders } from '../utilities/snake_and_ladder';
 import './info-module.css';
 
-const Info = () => {
 
+const Info = () => {
   const [targetAttempt, setTargetAttempt] = useState(0);
   const [attemptsLeft, setAttemptsLeft] = useState(0);
   const currentPosition = useSelector(state => state.pawn.position);
@@ -19,27 +21,7 @@ const Info = () => {
   const [dice2, setDice2] = useState({index : 1, isLocked : false, rollIndexes : [0]});
   const locks = useSelector(state => state.lock.locks);
   const dispatch = useDispatch();
-  const buttons = useSelector(state => state.button);
   const disabled = useSelector(state => state.button.disabled);
-  const [currentPawn, setCurrentPawn] = useState(currentPosition);
-
-  const ladders = [{start : 4, end : 40}, {start : 15, end : 69}, {start : 61, end : 82}];
-  const snakes = [{start : 38, end : 19}, {start : 67, end : 51}, {start : 79, end : 29}, {start : 97, end : 17}];
-
-
-  const getRandomNumbers = () => {
-    const randomNumbers = new Set();
-    while (randomNumbers.size < 4) {
-        const num = Math.floor(Math.random() * 6); 
-        randomNumbers.add(num);
-    }
-    return Array.from(randomNumbers);
-  }
-
-  const dispatchAll = () => {
-    //dispatch(hide())
-    dispatch(disableButton())
-  }
 
   const diceState = () => {
     setDice1({...dice1, isLocked : false});
@@ -54,7 +36,7 @@ const Info = () => {
     if((!dice1.isLocked || !dice2.isLocked) && roll.status === false) setAttemptsLeft(attemptsLeft-1);
     roll.name === "Roll" ? setRoll({...roll, name : "Re-roll", status : !roll.status}) : setRoll({...roll, name : "Roll", status : !roll.status});
     roll.name === "Roll" ? dispatch(show()) : dispatch(hide())
-    dispatchAll();
+    dispatch(disableButton())
     diceState();
   }
 
