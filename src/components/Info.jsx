@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {show, hide} from '../features/lock/lockSlice';
 import { hideButton, disableButton } from '../features/button/buttonSlice';
 import { changePostion, reducePositiion } from '../features/pawn/pawnSlice';
-import getRandomNumbers from '../utilities/utility';
+import {getRandomNumbers, generateRandom} from '../utilities/utility';
 import { snakes, ladders } from '../utilities/snake_and_ladder';
 import './info-module.css';
 
@@ -58,69 +58,70 @@ const Info = () => {
     }
   }
 
-  const generateRandom = () => {
-    const val = Math.floor(Math.random() * (50 - 30 + 1)) + 30;
-    return val;
-  }
-
   useEffect(() => {
     const target = generateRandom();
     setTargetAttempt(target);
     setAttemptsLeft(target);
   },[]);
-
+  
   useEffect(() => {
     if(dice1.rollIndexes.length !== 0 && dice2.rollIndexes.length !==0){  
       if(!uthse && ((dice1.rollIndexes[3] + 1 === 1) || (dice2.rollIndexes[3] + 1) === 1) && roll.status == false){ 
         setUthse(true);
-        if(dice1.rollIndexes[3] + 1 === 1 && dice2.rollIndexes[3] + 1 === ladders[0].start){
-          laddersClimbing(ladders[0].start, ladders[0].end, 0);
-        }else if(dice2.rollIndexes[3] + 1 === 1 && dice1.rollIndexes[3] + 1 === ladders[0].start){
-          laddersClimbing(ladders[0].start, ladders[0].end, 0);
-        }else movementAnimation(currentPosition + dice1.rollIndexes[3] + dice2.rollIndexes[3] + 1);
+        firstMove();
       }
       if(uthse && roll.status == false){
         const newPos = dice1.rollIndexes[3] + dice2.rollIndexes[3] + 2;
         let endPos = currentPosition + newPos;
-
         let flag = false;
-        for(let i = 0; i<ladders.length ; i++){
-          if(dice1.rollIndexes[3] + currentPosition + 1 === ladders[i].start){
-            flag = true;
-            laddersClimbing(ladders[i].start, ladders[i].end, dice2.rollIndexes[3]+1);
-            break;
-          }
-          else if(dice2.rollIndexes[3] + currentPosition + 1 === ladders[i].start){
-            flag = true;
-            laddersClimbing(ladders[i].start, ladders[i].end, dice1.rollIndexes[3]+1);
-            break;
-          }else if(endPos === ladders[i].start){
-            flag = true;
-            laddersClimbing(ladders[i].start, ladders[i].end, 0);
-            break;
-          }
-        }
-
-        for(let i = 0; i<snakes.length; i++){
-          if(dice1.rollIndexes[3] + currentPosition + 1 === snakes[i].start){
-            flag = true;
-            snakeBiting(snakes[i].start, snakes[i].end, dice2.rollIndexes[3]+1);
-            break;
-          }
-          else if(dice2.rollIndexes[3] + currentPosition + 1 === snakes[i].start){
-            flag = true;
-            snakeBiting(snakes[i].start, snakes[i].end, dice1.rollIndexes[3]+1);
-            break;
-          }else if(endPos === snakes[i].start){
-            flag = true;
-            snakeBiting(snakes[i].start, snakes[i].end, 0);
-            break;
-          }
-        }
+        flag = flag || laddersClimbingCheck(endPos);
+        flag = flag || snakeBitingCheck(endPos);
         if(!flag) movementAnimation(endPos);
       }
     }
   }, [dice1.rollIndexes, dice2.rollIndexes, roll.status])
+
+  const firstMove = () => {
+    if(dice1.rollIndexes[3] + 1 === 1 && dice2.rollIndexes[3] + 1 === ladders[0].start){
+      laddersClimbing(ladders[0].start, ladders[0].end, 0);
+    }else if(dice2.rollIndexes[3] + 1 === 1 && dice1.rollIndexes[3] + 1 === ladders[0].start){
+      laddersClimbing(ladders[0].start, ladders[0].end, 0);
+    }else movementAnimation(currentPosition + dice1.rollIndexes[3] + dice2.rollIndexes[3] + 1);
+  }
+
+  const laddersClimbingCheck = (endPos) => {
+    for(let i = 0; i<ladders.length ; i++){
+      if(dice1.rollIndexes[3] + currentPosition + 1 === ladders[i].start){
+        laddersClimbing(ladders[i].start, ladders[i].end, dice2.rollIndexes[3]+1);
+        return true;
+      }
+      else if(dice2.rollIndexes[3] + currentPosition + 1 === ladders[i].start){
+        laddersClimbing(ladders[i].start, ladders[i].end, dice1.rollIndexes[3]+1);
+        return true;
+      }else if(endPos === ladders[i].start){
+        laddersClimbing(ladders[i].start, ladders[i].end, 0);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const snakeBitingCheck = (endPos) => {
+    for(let i = 0; i<snakes.length; i++){
+      if(dice1.rollIndexes[3] + currentPosition + 1 === snakes[i].start){
+        snakeBiting(snakes[i].start, snakes[i].end, dice2.rollIndexes[3]+1);
+        return true;
+      }
+      else if(dice2.rollIndexes[3] + currentPosition + 1 === snakes[i].start){
+        snakeBiting(snakes[i].start, snakes[i].end, dice1.rollIndexes[3]+1);
+        return true;
+      }else if(endPos === snakes[i].start){
+        snakeBiting(snakes[i].start, snakes[i].end, 0);
+        return true;
+      }
+    }
+    return false;
+  }
 
   const laddersClimbing = (ladderStart, ladderEnd, dicePoint) => {
     movementAnimation(ladderStart, true)
@@ -142,8 +143,6 @@ const Info = () => {
 
 
   const movementAnimation = (endPos) => {
-    console.log("Start position : "+currentPosition);
-    console.log("End position : "+endPos);
     return new Promise((resolve) => {
       let startPos = currentPosition;
       const interval = setInterval(() => {
@@ -164,8 +163,6 @@ const Info = () => {
     console.log("Current Position : "+currentPosition);
   },[currentPosition]);
   
-
-
   return (
     <div className='info'>
       <div>
