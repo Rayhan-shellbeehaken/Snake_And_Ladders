@@ -15,33 +15,6 @@ a{
   display: flex;
 }
 
-.dice-class{
-  width: 60px;
-}
-
-.dice-class img{
-  width: 100%;
-}
-
-.dice-container{
-  display: flex;
-  flex-direction: column;
-  width: 15vw;
-}
-
-.dice-container > div:not(:last-child){
-  display: flex;
-  justify-content: space-between;
-  padding: 1vh 2vw;
-  text-align: center;
-}
-
-.dice-container > div > div > a{
-  font-size: 4vh;
-  text-align: center;
-  color: black;
-}
-
 .roll-button-container{
   display: flex;
   justify-content: center;
