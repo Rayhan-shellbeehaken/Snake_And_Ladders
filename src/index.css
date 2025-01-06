@@ -6,7 +6,6 @@
 
 a{
   text-decoration: none;
-  
 }
 
 .app-class{
@@ -15,31 +14,8 @@ a{
   display: flex;
 }
 
-.roll-button-container{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.roll-button-container a{
-  background-color: rgb(231, 231, 231);
-  padding: 2vh;
-  font-size: 22px;
-  border-radius: 7px;
-  margin: 0 5px;
-  color: black;
-}
-
-.roll:hover{
-  background-color: #58d68d;
-}
-
-.skip:hover{
-  background-color: #f1948a;
-}
-
 .disabled {
   pointer-events: none;
-  color: gray; /* Change color to indicate it's disabled */
+  color: gray; 
   cursor: not-allowed;
 }

@@ -36,3 +36,7 @@
   font-size: 25px;
   border-radius: 5px;
 }
+
+.skip:hover{
+  background-color: #f1948a;
+}

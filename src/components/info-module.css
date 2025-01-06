@@ -18,3 +18,22 @@
     font-size: 28px;
     margin-bottom: 8px;
 }
+
+.roll-button-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.roll-button-container a{
+    background-color: rgb(231, 231, 231);
+    padding: 2vh;
+    font-size: 22px;
+    border-radius: 7px;
+    margin: 0 5px;
+    color: black;
+}
+  
+.roll:hover{
+    background-color: #58d68d;
+}
