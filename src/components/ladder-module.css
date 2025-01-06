@@ -1,0 +1,25 @@
+.ladder-1{
+    position: absolute;
+    width: 8vw;
+    height: 60vh;
+    top: 27vh;
+    left: 28vw;
+    transform: rotate(20deg);
+}
+
+.ladder-2{
+    position: absolute;
+    width: 6vw;
+    top: 13vh;
+    left: 2vw;
+    transform: rotate(5deg);
+}
+
+.ladder-3{
+    position: absolute;
+    width: 8vw;
+    height: 39vh;
+    transform: scaleX(-1) rotate(29deg);
+    bottom: 0vh;
+    left: 5.5vw;
+}
