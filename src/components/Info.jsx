@@ -8,6 +8,7 @@ import { hideButton, disableButton } from '../features/button/buttonSlice';
 import { changePostion, reducePositiion } from '../features/pawn/pawnSlice';
 import {getRandomNumbers, generateRandom} from '../utilities/utility';
 import { snakes, ladders } from '../utilities/snake_and_ladder';
+import ScoreBox from './ScoreBox';
 import './info-module.css';
 
 
@@ -166,20 +167,9 @@ const Info = () => {
   
   return (
     <div className='info'>
-      <div>
-        <h2>Target Attempt</h2>
-        <h2>{targetAttempt}</h2>
-      </div>
-
-      <div>
-        <h2>Attempts left</h2>
-        <h2>{attemptsLeft}</h2>
-      </div>
-
-      <div>
-        <h2>Current Position</h2>
-        <h2>{currentPosition}</h2>
-      </div>
+      <ScoreBox title="Target Attempt" value={targetAttempt}/>
+      <ScoreBox title="Attempts Left" value={attemptsLeft}/>
+      <ScoreBox title="Current Position" value={currentPosition}/>
 
       <div className='dice-container'>
         <div>

@@ -1,0 +1,12 @@
+.score-box{
+    background-color: rgb(231, 231, 231);
+    margin: 3vh 0;
+    padding: 3vh 4vw;
+    border-radius: 7px;
+    text-align: center;
+}
+
+.score-box h2{
+    font-size: 28px;
+    margin-bottom: 8px;
+}
